@@ -34,12 +34,10 @@ public class Dogodek {
     @Column(name = "id_prostor", nullable = false)
     private Integer id_prostor;
 
-    @OneToOne
     @Column(name = "id_uporabnik", nullable = false)
-    private Uporabnik id_uporabnik;
+    private Integer id_uporabnik;
 
     @OneToMany
-    @Column(name = "obvescanje_na_mail", nullable = false)
     private List<Uporabnik> obvescanje_na_mail;
 
     public Integer getId() {
@@ -98,11 +96,11 @@ public class Dogodek {
         this.id_prostor = id_prostor;
     }
 
-    public Uporabnik getIdUporabnik() {
+    public Integer getIdUporabnik() {
         return id_uporabnik;
     }
 
-    public void setIdUporabnik(Uporabnik id_uporabnik) {
+    public void setIdUporabnik(Integer id_uporabnik) {
         this.id_uporabnik = id_uporabnik;
     }
 

@@ -1,2 +1,2 @@
-INSERT INTO dogodek (naziv, zacetek, konec, opis, cena, id_prostor, id_uporabnik, obvescanje_na_mail) VALUES ('Koncert', '2020-12-12 20:00:00', '2020-12-12 23:00:00', 'Koncert skupine Siddharta', 20, 1, 1, 'da');
-INSERT INTO dogodek (naziv, zacetek, konec, opis, cena, id_prostor, id_uporabnik, obvescanje_na_mail) VALUES ('Predavanje', '2020-12-15 18:00:00', '2020-12-15 20:00:00', 'Predavanje o programiranju', 0, 2, 2, 'da');
+INSERT INTO dogodek (naziv, zacetek, konec, opis, cena, id_prostor, id_uporabnik) VALUES ('Koncert', '2020-12-12 20:00:00', '2020-12-12 23:00:00', 'Koncert skupine Siddharta', 20, 1, 1);
+INSERT INTO dogodek (naziv, zacetek, konec, opis, cena, id_prostor, id_uporabnik) VALUES ('Predavanje', '2020-12-15 18:00:00', '2020-12-15 20:00:00', 'Predavanje o programiranju', 0, 2, 2);

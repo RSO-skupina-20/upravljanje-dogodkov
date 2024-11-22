@@ -1,0 +1,13 @@
+kumuluzee:
+  name: upravljanje-dogodkov
+  version: 1.0.0
+  env:
+    name: dev
+  datasources:
+    - jndi-name: jdbc/upravljanje-dogodkov
+      connection-url: jdbc:postgresql://localhost:5434/dogodki
+      username: postgres
+      password: postgres
+      max-pool-size: 20
+
+
