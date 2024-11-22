@@ -7,8 +7,8 @@ import java.util.List;
 @Entity(name = "dogodek")
 @NamedQueries(value = {
         @NamedQuery(name = "Dogodek.getAll", query = "SELECT d FROM dogodek d"),
-        @NamedQuery(name = "Dogodek.getDogodek", query = "SELECT d FROM dogodek d WHERE d.id = :id"),
-        @NamedQuery(name = "Dogodek.updateDogodek", query = "UPDATE dogodek d SET d.naziv = :naziv, d.zacetek = :zacetek, d.konec = :konec, d.opis = :opis, d.cena = :cena, d.id_prostor = :id_prostor, d.id_uporabnik = :id_uporabnik, d.obvescanje_na_mail = :obvescanje_na_mail WHERE d.id = :id"),
+        @NamedQuery(name = "Dogodek.getDogodek", query = "SELECT d FROM dogodek d WHERE d.id_dogodek = :id"),
+        @NamedQuery(name = "Dogodek.updateDogodek", query = "UPDATE dogodek d SET d.naziv = :naziv, d.zacetek = :zacetek, d.konec = :konec, d.opis = :opis, d.cena = :cena, d.id_prostor = :id_prostor, d.id_uporabnik = :id_uporabnik WHERE d.id_dogodek = :id"),
         @NamedQuery(name = "Dogodek.deleteDogodek", query = "DELETE FROM dogodek d WHERE d.id = :id")
 })
 public class Dogodek {
@@ -37,8 +37,10 @@ public class Dogodek {
     @Column(name = "id_uporabnik", nullable = false)
     private Integer id_uporabnik;
 
-    @OneToMany
-    private List<Uporabnik> obvescanje_na_mail;
+    @OneToMany(mappedBy = "dogodek")
+    private List<Povabljeni> povabljeni;
+
+
 
     public Integer getId() {
         return id_dogodek;
@@ -104,12 +106,12 @@ public class Dogodek {
         this.id_uporabnik = id_uporabnik;
     }
 
-    public List<Uporabnik> getObvescanjeNaMail() {
-        return obvescanje_na_mail;
+    public List<Povabljeni> getPovabljeni() {
+        return povabljeni;
     }
 
-    public void setObvescanjeNaMail(List<Uporabnik> obvescanje_na_mail) {
-        this.obvescanje_na_mail = obvescanje_na_mail;
+    public void setPovabljeni(List<Povabljeni> uporabniki) {
+        this.povabljeni = uporabniki;
     }
 
 

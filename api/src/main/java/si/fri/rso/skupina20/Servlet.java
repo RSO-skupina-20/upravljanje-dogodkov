@@ -27,5 +27,9 @@ public class Servlet extends HttpServlet {
         for(Dogodek dogodek : dogodki) {
             writer.write("Dogodek: " + dogodek.getId() + " " + dogodek.getNaziv() + "\n");
         }
+
+        // Search for a specific Dogodek with id 2
+        Dogodek dogodek = dogodekZrno.getDogodek(2);
+        writer.write("Dogodek pridobljen z getDogodek: " + dogodek.getId() + " " + dogodek.getNaziv() + "\n");
     }
 }
