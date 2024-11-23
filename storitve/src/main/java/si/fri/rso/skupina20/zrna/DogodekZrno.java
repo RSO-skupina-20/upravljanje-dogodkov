@@ -1,5 +1,7 @@
 package si.fri.rso.skupina20.zrna;
 
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.sun.xml.bind.v2.TODO;
 import si.fri.rso.skupina20.entitete.Dogodek;
 import si.fri.rso.skupina20.entitete.Uporabnik;
@@ -28,6 +30,15 @@ public class DogodekZrno {
             log.severe("Napaka pri pridobivanju dogodkov: " + e.getMessage());
             return null;
         }
+    }
+
+    /***
+     * Pridobi dogodke iz baze glede na query
+     * @param query
+     * @return
+     */
+    public List<Dogodek> getDogodki(QueryParameters query) {
+        return JPAUtils.queryEntities(em, Dogodek.class, query);
     }
 
     /***
@@ -123,5 +134,9 @@ public class DogodekZrno {
         }
 
         return dogodek;
+    }
+
+    public Long getDogodkiCount(QueryParameters query) {
+        return JPAUtils.queryEntitiesCount(em, Dogodek.class, query);
     }
 }

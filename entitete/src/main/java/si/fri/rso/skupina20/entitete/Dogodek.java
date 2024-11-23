@@ -105,7 +105,6 @@ public class Dogodek {
     public void setIdUporabnik(Integer id_uporabnik) {
         this.id_uporabnik = id_uporabnik;
     }
-
     public List<Povabljeni> getPovabljeni() {
         return povabljeni;
     }

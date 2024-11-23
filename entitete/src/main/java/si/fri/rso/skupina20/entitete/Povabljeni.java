@@ -1,5 +1,6 @@
 package si.fri.rso.skupina20.entitete;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 
 @Entity(name = "povabljeni")
@@ -32,6 +33,7 @@ public class Povabljeni {
 
     @ManyToOne
     @JoinColumn(name = "id_dogodek", insertable = false, updatable = false)
+    @JsonbTransient
     private Dogodek dogodek;
 
     public Integer getid() {
