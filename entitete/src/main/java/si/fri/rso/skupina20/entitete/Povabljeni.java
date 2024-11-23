@@ -3,10 +3,17 @@ package si.fri.rso.skupina20.entitete;
 import javax.persistence.*;
 
 @Entity(name = "povabljeni")
+@NamedQueries(value = {
+        @NamedQuery(name = "Povabljeni.getAll", query = "SELECT p FROM povabljeni p"),
+        @NamedQuery(name = "Povabljeni.getVabilo", query = "SELECT p FROM povabljeni p WHERE p.id = :id"),
+        @NamedQuery(name = "Povabljeni.getVabilaDogodka", query = "SELECT p FROM povabljeni p WHERE p.id_dogodek = :id"),
+        @NamedQuery(name = "Povabljeni.updatePovabljeni", query = "UPDATE povabljeni p SET p.ime = :ime, p.priimek = :priimek, p.email = :email, p.id_dogodek = :id_dogodek, p.sprejeto = :sprejeto WHERE p.id = :id"),
+        @NamedQuery(name = "Povabljeni.deletePovabljeni", query = "DELETE FROM povabljeni p WHERE p.id = :id")
+})
 public class Povabljeni {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_povabljeni;
+    private Integer id;
 
     @Column(name = "ime", nullable = false)
     private String ime;
@@ -27,12 +34,12 @@ public class Povabljeni {
     @JoinColumn(name = "id_dogodek", insertable = false, updatable = false)
     private Dogodek dogodek;
 
-    public Integer getId_povabljeni() {
-        return id_povabljeni;
+    public Integer getid() {
+        return id;
     }
 
-    public void setId_povabljeni(Integer id_povabljeni) {
-        this.id_povabljeni = id_povabljeni;
+    public void setid(Integer id) {
+        this.id = id;
     }
 
     public String getIme() {

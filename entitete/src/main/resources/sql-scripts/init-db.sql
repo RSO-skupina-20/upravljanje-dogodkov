@@ -7,3 +7,4 @@ INSERT INTO uporabnik (email, geslo, ime, priimek, telefon) VALUES ('tajda.vrhov
 
 INSERT INTO povabljeni (email, id_dogodek, ime, priimek, sprejeto) VALUES ('janez.novak@gmail.com"', 1, 'Janez', 'Novak', TRUE);
 INSERT INTO povabljeni (email, id_dogodek, ime, priimek, sprejeto) VALUES ('matija.nabija@gmail.com', 1, 'Matija', 'Nabija', FALSE);
+INSERT INTO povabljeni (email, id_dogodek, ime, priimek, sprejeto) VALUES ('benjamin.sesko@gmail.com', 2, 'Benjamin', 'Šeško', TRUE);
