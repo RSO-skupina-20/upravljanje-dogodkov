@@ -40,14 +40,12 @@ public class Dogodek {
     @OneToMany(mappedBy = "dogodek", fetch = FetchType.EAGER)
     private List<Povabljeni> povabljeni;
 
-
-
-    public Integer getId() {
+    public Integer getId_dogodek() {
         return id_dogodek;
     }
 
-    public void setId(Integer id) {
-        this.id_dogodek = id;
+    public void setId_dogodek(Integer id_dogodek) {
+        this.id_dogodek = id_dogodek;
     }
 
     public String getNaziv() {
@@ -90,28 +88,27 @@ public class Dogodek {
         this.cena = cena;
     }
 
-    public Integer getIdProstor() {
+    public Integer getId_prostor() {
         return id_prostor;
     }
 
-    public void setIdProstor(Integer id_prostor) {
+    public void setId_prostor(Integer id_prostor) {
         this.id_prostor = id_prostor;
     }
 
-    public Integer getIdUporabnik() {
+    public Integer getId_uporabnik() {
         return id_uporabnik;
     }
 
-    public void setIdUporabnik(Integer id_uporabnik) {
+    public void setId_uporabnik(Integer id_uporabnik) {
         this.id_uporabnik = id_uporabnik;
     }
+
     public List<Povabljeni> getPovabljeni() {
         return povabljeni;
     }
 
-    public void setPovabljeni(List<Povabljeni> uporabniki) {
-        this.povabljeni = uporabniki;
+    public void setPovabljeni(List<Povabljeni> povabljeni) {
+        this.povabljeni = povabljeni;
     }
-
-
 }

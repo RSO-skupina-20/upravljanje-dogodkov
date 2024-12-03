@@ -86,13 +86,13 @@ public class DogodekZrno {
         // Preveri, če dogodek vsebuje vse potrebne podatke
         if (dogodek == null || dogodek.getNaziv() == null || dogodek.getZacetek() == null ||
                 dogodek.getKonec() == null || dogodek.getOpis() == null || dogodek.getCena() == null ||
-                dogodek.getIdProstor() == null || dogodek.getIdUporabnik() == null) {
+                dogodek.getId_prostor() == null || dogodek.getId_uporabnik() == null) {
             log.severe("Dogodek ni pravilno definiran");
             return null;
         }
         // Preveri, uporabnik s tem id-jem obstaja
-        if (em.createNamedQuery("Uporabnik.getUporabnik", Uporabnik.class).setParameter("id", dogodek.getIdUporabnik()).getResultList().isEmpty()) {
-            log.severe("Uporabnik z id-jem " + dogodek.getIdUporabnik() + " ne obstaja");
+        if (em.createNamedQuery("Uporabnik.getUporabnik", Uporabnik.class).setParameter("id", dogodek.getId_uporabnik()).getResultList().isEmpty()) {
+            log.severe("Uporabnik z id-jem " + dogodek.getId_uporabnik() + " ne obstaja");
             return null;
         }
 
@@ -124,8 +124,8 @@ public class DogodekZrno {
             oldDogodek.setKonec((dogodek.getKonec() != null) ? dogodek.getKonec() : oldDogodek.getKonec());
             oldDogodek.setOpis((dogodek.getOpis() != null) ? dogodek.getOpis() : oldDogodek.getOpis());
             oldDogodek.setCena((dogodek.getCena() != null) ? dogodek.getCena() : oldDogodek.getCena());
-            oldDogodek.setIdProstor((dogodek.getIdProstor() != null) ? dogodek.getIdProstor() : oldDogodek.getIdProstor());
-            oldDogodek.setIdUporabnik((dogodek.getIdUporabnik() != null) ? dogodek.getIdUporabnik() : oldDogodek.getIdUporabnik());
+            oldDogodek.setId_prostor((dogodek.getId_prostor() != null) ? dogodek.getId_prostor() : oldDogodek.getId_prostor());
+            oldDogodek.setId_uporabnik((dogodek.getId_uporabnik() != null) ? dogodek.getId_uporabnik() : oldDogodek.getId_uporabnik());
 
             em.merge(oldDogodek);
         } catch (Exception e) {
