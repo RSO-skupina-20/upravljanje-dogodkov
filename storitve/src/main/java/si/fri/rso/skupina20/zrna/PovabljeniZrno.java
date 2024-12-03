@@ -139,7 +139,7 @@ public class PovabljeniZrno {
                 return null;
             }
             // Če je vnesen nov podatek, ga uporabi, sicer uporabi obstoječega
-            povabljeni.setid(id);
+            povabljeni.setId(id);
             povabljeni.setEmail(povabljeni.getEmail() != null ? povabljeni.getEmail() : oldPovabljeni.getEmail());
             povabljeni.setIme(povabljeni.getIme() != null ? povabljeni.getIme() : oldPovabljeni.getIme());
             povabljeni.setPriimek(povabljeni.getPriimek() != null ? povabljeni.getPriimek() : oldPovabljeni.getPriimek());
