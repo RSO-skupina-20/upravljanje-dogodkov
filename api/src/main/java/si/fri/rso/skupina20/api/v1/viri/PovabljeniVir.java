@@ -9,7 +9,9 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import si.fri.rso.skupina20.entitete.Dogodek;
 import si.fri.rso.skupina20.entitete.Povabljeni;
+import si.fri.rso.skupina20.utils.EmailSender;
 import si.fri.rso.skupina20.zrna.DogodekZrno;
 import si.fri.rso.skupina20.zrna.PovabljeniZrno;
 
@@ -156,11 +158,26 @@ public class PovabljeniVir {
     })
     // Ustvari novo povabilo
     public Response ustvariPovabilo(Povabljeni povabljeni) {
-        if (povabljeni.getDogodek() == null && dogodekZrno.getDogodek(povabljeni.getId_dogodek()) == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Neveljavni podatki oziroma dogodek ne obstaja\"}")
-                    .build();
+        Dogodek dogodek = dogodekZrno.getDogodek(povabljeni.getId_dogodek());
+        if (dogodek == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Dogodek ne obstaja\"}").build();
         }
-        povabljeni = povabljeniZrno.createPovabljeni(povabljeni);
+
+        Povabljeni povabljeniNew = povabljeniZrno.createPovabljeni(povabljeni);
+
+        // if created successfully, then send email
+        if (povabljeniNew != null) {
+            // send email to the invited person
+            System.out.println("Sending email to " + povabljeni.getEmail());
+            String to = povabljeni.getEmail();
+            String subject = "Povabilo na dogodek";
+            String body = "Spoštovani " + povabljeni.getIme() + ",\n\n" +
+                    "Vabljeni ste na dogodek: " + dogodek.getNaziv() + ".\n" +
+                    "Datum: " + dogodek.getZacetek() + "\n\n" +
+                    "Lep pozdrav,\nOrganizator";
+
+            EmailSender.sendEmail(to, subject, body);
+        }
         return Response.status(Response.Status.CREATED).entity(povabljeni).build();
     }
 
