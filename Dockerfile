@@ -1,11 +1,16 @@
-# Get default image PostreSQL 13
-FROM postgres:13
+FROM adoptopenjdk:16-jre-openj9-focal
 
-# Set the environment variable
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_DB=dogodki
+RUN mkdir /app
 
-# Run with:
-#   1.) docker build -t dogodki-db .
-#   2.) docker run -d --name upravljanje-dogodkov-db -p 5434:5432 dogodki-db
+WORKDIR /app
+
+ADD ./api/target/api-1.0-SNAPSHOT.jar /app
+
+EXPOSE 8080
+
+ENV DB_URL=db_url \
+    DB_USER=db_user \
+    DB_PASSWORD=db_pass \
+    JWT_SECRET=jwt_secret
+
+ENTRYPOINT ["java", "-jar", "api-1.0-SNAPSHOT.jar"]
