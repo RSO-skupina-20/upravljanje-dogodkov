@@ -176,7 +176,9 @@ public class PovabljeniVir {
                     "Datum: " + dogodek.getZacetek() + "\n\n" +
                     "Lep pozdrav,\nOrganizator";
 
-            EmailSender.sendEmail(to, subject, body);
+            String nameTo = povabljeni.getIme() + " " + povabljeni.getPriimek();
+
+            EmailSender.sendEmail(nameTo, to, subject, body);
         }
         return Response.status(Response.Status.CREATED).entity(povabljeni).build();
     }

@@ -1,5 +1,11 @@
 package si.fri.rso.skupina20.utils;
 
+import com.mailersend.sdk.MailerSend;
+import com.mailersend.sdk.MailerSendResponse;
+import com.mailersend.sdk.emails.Email;
+import com.mailersend.sdk.exceptions.MailerSendException;
+import io.github.cdimascio.dotenv.Dotenv;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -7,43 +13,24 @@ import java.util.Properties;
 
 public class EmailSender {
 
-    public static void sendEmail(String email, String subject, String text) {
-        final String username = "rso.organizacijadogodkov@gmail.com";
-        final String password = "Rso_Projektna_Skupina_16_Geslo";
+    public static void sendEmail(String nameTo, String emailAddress, String subject, String text) {
+        Dotenv dotenv = Dotenv.load();
+        Email email = new Email();
+        final String fromDomain = dotenv.get("FROM_DOMAIN");
 
-        Properties props = new Properties();
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.starttls.enable", "true");
-        System.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
-        System.setProperty("mail.smtp.ssl.checkserveridentity", "true");
+        email.setFrom("Organizacija dogodkov", fromDomain);
+        email.addRecipient(nameTo, emailAddress);
 
-        System.out.println("Before session creation");
+        email.setSubject(subject);
+        email.setPlain(text);
 
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
-        System.out.println("After session creation");
+        MailerSend ms = new MailerSend();
+        ms.setToken(dotenv.get("TOKEN"));
 
         try {
-            System.out.println("Before message creation");
-            Message message = new MimeMessage(session);
-            System.out.println("After message creation");
-            message.setFrom(new InternetAddress(username));
-            System.out.println("After set from");
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(email));
-            System.out.println("After set recipients");
-            message.setSubject(subject);
-            System.out.println("After set subject");
-            message.setText(text);
-            System.out.println("After set text");
-            Transport.send(message);
-            System.out.println("Email sent successfully");
-        } catch (MessagingException e) {
+            MailerSendResponse response = ms.emails().send(email);
+            System.out.println(response.messageId);
+        } catch (MailerSendException e) {
             e.printStackTrace();
         }
     }

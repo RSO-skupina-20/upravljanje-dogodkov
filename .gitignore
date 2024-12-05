@@ -41,3 +41,6 @@ buildNumber.properties
 
 # IntelliJ IDEA specific files
 .idea/
+
+# Environment variables
+.env
