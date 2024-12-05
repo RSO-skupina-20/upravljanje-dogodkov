@@ -47,9 +47,5 @@ public class Servlet extends HttpServlet {
         dogodekToCreate.setCena(10.0);
         dogodekToCreate.setId_prostor(1);
         dogodekToCreate.setId_uporabnik(1);
-
-        dogodekZrno.createDogodek(dogodekToCreate);
-        writer.write("Dogodek ustvarjen z createDogodek: " + dogodekToCreate.getId_dogodek() + " " + dogodekToCreate.getNaziv() + "\n");
-        writer.write("Povabljeni na dogodek 1: " + dogodekZrno.getDogodek(1).getPovabljeni() + "\n");
     }
 }

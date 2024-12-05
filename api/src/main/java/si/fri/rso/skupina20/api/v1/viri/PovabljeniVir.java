@@ -8,7 +8,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import si.fri.rso.skupina20.auth.PreverjanjeZetonov;
 import si.fri.rso.skupina20.entitete.Dogodek;
 import si.fri.rso.skupina20.entitete.Povabljeni;
 import si.fri.rso.skupina20.utils.EmailSender;
@@ -157,13 +159,14 @@ public class PovabljeniVir {
                     "{\"napaka\": \"Neveljavni podatki\"}")))
     })
     // Ustvari novo povabilo
-    public Response ustvariPovabilo(Povabljeni povabljeni) {
+    @SecurityRequirement(name = "bearerAuth")
+    public Response ustvariPovabilo(Povabljeni povabljeni, @HeaderParam("authorization") String authorization) {
         Dogodek dogodek = dogodekZrno.getDogodek(povabljeni.getId_dogodek());
         if (dogodek == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Dogodek ne obstaja\"}").build();
         }
 
-        Povabljeni povabljeniNew = povabljeniZrno.createPovabljeni(povabljeni);
+        Povabljeni povabljeniNew = povabljeniZrno.createPovabljeni(povabljeni, authorization);
 
         // if created successfully, then send email
         if (povabljeniNew != null) {
@@ -179,6 +182,8 @@ public class PovabljeniVir {
             String nameTo = povabljeni.getIme() + " " + povabljeni.getPriimek();
 
             EmailSender.sendEmail(nameTo, to, subject, body);
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"napaka\": \"Povabilo ni bilo uspešno ustvarjeno\"}").build();
         }
         return Response.status(Response.Status.CREATED).entity(povabljeni).build();
     }
@@ -198,8 +203,14 @@ public class PovabljeniVir {
                     "{\"napaka\": \"Povabilo ne obstaja\"}")))
     })
     // Posodobi povabilo
+    @SecurityRequirement(name = "bearerAuth")
     public Response posodobiPovabilo(@PathParam("id") Integer id, @RequestBody(description = "Entiteta povabljeni", required = true, content = @Content(
-            schema = @Schema(implementation = Povabljeni.class))) Povabljeni povabljeni) {
+            schema = @Schema(implementation = Povabljeni.class))) Povabljeni povabljeni, @HeaderParam("authorization") String authorization) {
+
+        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(authorization);
+        if (uporabnik_id == -1) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"napaka\": \"Nimate pravic za posodabljanje povabila\"}").build();
+        }
         // Pridobi povabilo iz baze
         Povabljeni oldPovabljeni = povabljeniZrno.getVabilo(id);
         if (oldPovabljeni == null) {
@@ -232,7 +243,11 @@ public class PovabljeniVir {
                     schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Povabilo ne obstaja\"}")))
     })
     // Izbriši povabilo
-    public Response izbrisiPovabilo(@PathParam("id") Integer id) {
+    @SecurityRequirement(name = "bearerAuth")
+    public Response izbrisiPovabilo(@PathParam("id") Integer id, @HeaderParam("authorization") String authorization) {
+        if (!PreverjanjeZetonov.verifyOwner(authorization, id)) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("{\"napaka\": \"Nimate pravic za brisanje povabila\"}").build();
+        }
         if (povabljeniZrno.deletePovabljeni(id)) {
             return Response.ok("{\"sporocilo\": \"Povabilo uspešno izbrisano\"}").build();
         }

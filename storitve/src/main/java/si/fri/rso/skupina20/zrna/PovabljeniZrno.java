@@ -1,5 +1,6 @@
 package si.fri.rso.skupina20.zrna;
 
+import si.fri.rso.skupina20.auth.PreverjanjeZetonov;
 import si.fri.rso.skupina20.entitete.Povabljeni;
 
 import javax.inject.Inject;
@@ -96,7 +97,11 @@ public class PovabljeniZrno {
      * @return vabilo, ki smo ga dodali v bazo
      */
     @Transactional
-    public Povabljeni createPovabljeni(Povabljeni povabljeni) {
+    public Povabljeni createPovabljeni(Povabljeni povabljeni, String token) {
+        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(token);
+        if (uporabnik_id == -1) {
+            return null;
+        }
         try {
             // Preveri, če povabljeni vsebuje vse potrebne podatke
             if (povabljeni == null || povabljeni.getIme() == null || povabljeni.getPriimek() == null ||
@@ -153,6 +158,7 @@ public class PovabljeniZrno {
             return null;
         }
     }
+
     /***
      * Izbriši vabilo
      * @param id id vabila, ki ga želimo izbrisati

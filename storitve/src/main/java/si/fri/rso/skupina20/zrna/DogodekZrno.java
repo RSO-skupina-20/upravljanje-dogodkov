@@ -3,6 +3,7 @@ package si.fri.rso.skupina20.zrna;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.sun.xml.bind.v2.TODO;
+import si.fri.rso.skupina20.auth.PreverjanjeZetonov;
 import si.fri.rso.skupina20.entitete.Dogodek;
 import si.fri.rso.skupina20.entitete.Uporabnik;
 
@@ -79,10 +80,16 @@ public class DogodekZrno {
     /***
      * Dodaj dogodek v bazo
      * @param dogodek dogodek, ki ga želimo dodati v bazo
+     * @param token žeton, ki ga uporabljamo za preverjanje pravic
      * @return dogodek, ki smo ga dodali v bazo
      */
     @Transactional
-    public Dogodek createDogodek(Dogodek dogodek) {
+    public Dogodek createDogodek(Dogodek dogodek, String token) {
+        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(token);
+        if (uporabnik_id == -1) {
+            return null;
+        }
+
         // Preveri, če dogodek vsebuje vse potrebne podatke
         if (dogodek == null || dogodek.getNaziv() == null || dogodek.getZacetek() == null ||
                 dogodek.getKonec() == null || dogodek.getOpis() == null || dogodek.getCena() == null ||

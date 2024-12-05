@@ -10,7 +10,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import si.fri.rso.skupina20.auth.PreverjanjeZetonov;
 import si.fri.rso.skupina20.entitete.Dogodek;
 import si.fri.rso.skupina20.zrna.DogodekZrno;
 
@@ -46,7 +48,7 @@ public class DogodkiVir {
                             type = SchemaType.INTEGER))),
             @APIResponse(responseCode = "404", description = "Dogodki ne obstajajo", content = @Content(
                     mediaType = "application/json", schema = @Schema(
-                            implementation = String.class, example = "{\"napaka\": \"Dogodkov ni mogoče najti\"}"))),
+                    implementation = String.class, example = "{\"napaka\": \"Dogodkov ni mogoče najti\"}"))),
     })
     public Response vrniDogodke() {
         QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
@@ -89,8 +91,9 @@ public class DogodkiVir {
                     mediaType = "application/json", schema = @Schema(implementation = String.class, example =
                     "{\"napaka\": \"Neveljavni podatki\"}")))
     })
+    @SecurityRequirement(name = "bearerAuth")
     public Response ustvariDogodek(@RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
-            schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek) {
+            schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek, @HeaderParam("Authorization") String authorization) {
 
         if (dogodek.getNaziv() == null || dogodek.getZacetek() == null || dogodek.getKonec() == null ||
                 dogodek.getOpis() == null || dogodek.getCena() == null || dogodek.getId_prostor() == null ||
@@ -98,7 +101,12 @@ public class DogodkiVir {
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Neveljavni podatki\"}")
                     .build();
         }
-        dogodek = dogodekZrno.createDogodek(dogodek);
+        dogodek = dogodekZrno.createDogodek(dogodek, authorization);
+
+        if (dogodek == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Težave z avtorizacijo! \"}")
+                    .build();
+        }
         return Response.status(Response.Status.CREATED).entity(dogodek).build();
     }
 
@@ -111,8 +119,15 @@ public class DogodkiVir {
                     schema = @Schema(implementation = String.class, example = "{\"sporocilo\": \"Dogodek uspešno izbrisan\"}"))),
             @APIResponse(responseCode = "404", description = "Dogodek ne obstaja", content = @Content(
                     schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Dogodek ne obstaja\"}"))),
+            @APIResponse(responseCode = "403", description = "Nimate pravic za brisanje dogodka", content = @Content(
+                    schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Nimate pravic za brisanje dogodka\"}")))
     })
-    public Response izbrisiDogodek(@PathParam("id") Integer id) {
+    @SecurityRequirement(name = "bearerAuth")
+    public Response izbrisiDogodek(@PathParam("id") Integer id, @HeaderParam("authorization") String authorization) {
+        if (!PreverjanjeZetonov.verifyOwner(authorization, id)) {
+            return Response.status(Response.Status.FORBIDDEN).entity("{\"napaka\": \"Nimate pravic za brisanje dogodka\"}")
+                    .build();
+        }
         if (dogodekZrno.deleteDogodek(id)) {
             return Response.ok("{\"sporocilo\": \"Dogodek uspešno izbrisan\"}").build();
         }
@@ -131,9 +146,18 @@ public class DogodkiVir {
                     schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Neveljavni podatki\"}"))),
             @APIResponse(responseCode = "404", description = "Dogodek ne obstaja", content = @Content(
                     schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Dogodek ne obstaja\"}"))),
+            @APIResponse(responseCode = "403", description = "Nimate pravic za posodabljanje dogodka", content = @Content(
+                    schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Nimate pravic za posodabljanje dogodka\"}")))
     })
+    @SecurityRequirement(name = "bearerAuth")
     public Response posodobiDogodek(@PathParam("id") Integer id, @RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
-            schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek) {
+            schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek, @HeaderParam("authorization") String authorization) {
+
+        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(authorization);
+        if (uporabnik_id == -1) {
+            return Response.status(Response.Status.FORBIDDEN).entity("{\"napaka\": \"Nimate pravic za posodabljanje dogodka\"}")
+                    .build();
+        }
         // Pridobi dogodek iz baze
         Dogodek oldDogodek = dogodekZrno.getDogodek(id);
         if (oldDogodek == null) {

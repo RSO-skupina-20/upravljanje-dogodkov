@@ -30,6 +30,11 @@
             <groupId>com.kumuluz.ee.rest</groupId>
             <artifactId>kumuluzee-rest-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${com.auth0-java-jwt.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>si.fri.rso.skupina20</groupId>
