@@ -31,7 +31,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @CrossOrigin(supportedMethods = "GET, POST, DELETE, PUT, HEAD, OPTIONS")
-@Tag(name = "Dogodki", description = "Upravljanje z dogodki")
+@Tag(name = "Povabljeni", description = "Upravljanje z povabljenimi na dogodke")
 public class PovabljeniVir {
     @Context
     protected UriInfo uriInfo;
