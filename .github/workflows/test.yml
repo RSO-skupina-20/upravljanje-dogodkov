@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-    name: Build with Maven
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,15 +19,15 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '16'
+          distribution: 'temurin'
 
-      - name: Build with Maven
+      - name: Build project
         run: mvn clean install -DskipTests=true
 
       - name: Run unit tests
         run: mvn test
 
   push_to_registry:
-    name: Push to Docker Hub
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -51,4 +50,3 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/upravljanjedogodkov:latest
-          labels: ${{ secrets.DOCKER_USERNAME }}/upravljanjedogodkov:latest
