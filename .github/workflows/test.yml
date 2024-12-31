@@ -24,6 +24,9 @@ jobs:
       - name: Build project
         run: mvn clean install -DskipTests=true
 
+      - name: Verify build project
+        run: ls -l ./api/target
+
       - name: Run unit tests
         run: mvn test
 
