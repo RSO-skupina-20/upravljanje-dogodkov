@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: upravljanje-dogodkov-deployment
+  labels:
+    app: upravljanje-dogodkov
+    shared: "true"
 spec:
   replicas: 1
   selector:
@@ -11,6 +14,7 @@ spec:
     metadata:
       labels:
         app: upravljanje-dogodkov
+        shared: "true"
     spec:
       containers:
         - name: upravljanje-dogodkov
@@ -59,9 +63,9 @@ kind: Service
 metadata:
   name: upravljanje-dogodkov-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-    - port: 8082
+    - port: 8080
       protocol: TCP
       targetPort: 8080
   selector:
