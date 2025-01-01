@@ -76,4 +76,4 @@ jobs:
         uses: azure/k8s-deploy@v1
         with:
           manifests: k8s/upravljanje-dogodkov-deployment.yaml
-          images: jantopolovec/upravljanje-dogodkov:latest
+          images: ${{ secrets.DOCKER_USERNAME }}/upravljanje-dogodkov:latest
