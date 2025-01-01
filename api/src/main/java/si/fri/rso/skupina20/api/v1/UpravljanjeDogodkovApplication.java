@@ -12,7 +12,10 @@ import javax.ws.rs.ApplicationPath;
         title = "Upravljanje dogodkov API",
         version = "v1",
         description = "Upravljanje dogodkov API omogoča upravljanje z dogodki"),
-        servers = @Server(url = "http://localhost:8082"))
+        servers = {
+        @Server(url = "https://neki:8080"),
+        @Server(url = "http://localhost:8082")
+    })
 @SecurityScheme(
         securitySchemeName = "bearerAuth",
         type = SecuritySchemeType.HTTP,
