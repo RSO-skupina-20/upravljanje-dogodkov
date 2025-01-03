@@ -89,26 +89,44 @@ public class DogodkiVir {
                     schema = @Schema(implementation = Dogodek.class))),
             @APIResponse(responseCode = "400", description = "Neveljavni podatki", content = @Content(
                     mediaType = "application/json", schema = @Schema(implementation = String.class, example =
-                    "{\"napaka\": \"Neveljavni podatki\"}")))
+                    "{\"napaka\": \"Neveljavni podatki\"}"))),
+            @APIResponse(responseCode = "401", description = "Neuspešna avtorizacija", content = @Content(
+                    mediaType = "application/json", schema = @Schema(implementation = String.class, example =
+                    "{\"napaka\": \"Neveljaven avtorizacijski žeton\"}"))),
+            @APIResponse(responseCode = "500", description = "Napaka na strežniku", content = @Content(
+                    mediaType = "application/json", schema = @Schema(implementation = String.class, example =
+                    "{\"napaka\": \"Napaka na strežniku\"}")))
     })
     @SecurityRequirement(name = "bearerAuth")
     public Response ustvariDogodek(@RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
             schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek, @HeaderParam("Authorization") String authorization) {
 
+        // Preveri, če so vhodni podatki veljavni
         if (dogodek.getNaziv() == null || dogodek.getZacetek() == null || dogodek.getKonec() == null ||
                 dogodek.getOpis() == null || dogodek.getCena() == null || dogodek.getId_prostor() == null ||
                 dogodek.getId_uporabnik() == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Neveljavni podatki\"}")
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"napaka\": \"Neveljavni podatki. Vsi obvezni parametri morajo biti vključeni.\"}")
                     .build();
         }
-        dogodek = dogodekZrno.createDogodek(dogodek, authorization);
 
-        if (dogodek == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Težave z avtorizacijo! \"}")
+        try {
+            Dogodek novDogodek = dogodekZrno.createDogodek(dogodek, authorization);
+
+            if (novDogodek == null) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"napaka\": \"Neveljaven avtorizacijski žeton ali uporabnik ne obstaja.\"}")
+                        .build();
+            }
+
+            return Response.status(Response.Status.CREATED).entity(novDogodek).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"napaka\": \"Napaka na strežniku\"}")
                     .build();
         }
-        return Response.status(Response.Status.CREATED).entity(dogodek).build();
     }
+
 
     // Izbriši dogodek iz baze glede na id
     @DELETE
@@ -179,5 +197,24 @@ public class DogodkiVir {
 
         // Vrni posodobljen dogodek
         return Response.ok(oldDogodek).build();
+    }
+
+    // Pridobi dogodke glede na id_prostor
+    @GET
+    @Path("/prostor/{id_prostor}")
+    @Operation(summary = "Pridobi dogodke glede na id_prostor", description = "Vrne dogodke glede na id_prostor")
+    @APIResponses({
+            @APIResponse(responseCode = "200", description = "Seznam dogodkov", content = @Content(
+                    schema = @Schema(implementation = Dogodek.class))),
+            @APIResponse(responseCode = "404", description = "Dogodki ne obstajajo", content = @Content(
+                    schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Dogodkov ni mogoče najti\"}"))),
+    })
+    public Response vrniDogodkeProstor(@PathParam("id_prostor") Integer id_prostor) {
+        List<Dogodek> dogodki = dogodekZrno.getDogodkiProstor(id_prostor);
+        if (dogodki == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"napaka\": \"Dogodkov ni mogoče najti\"}")
+                    .build();
+        }
+        return Response.ok(dogodki).build();
     }
 }
