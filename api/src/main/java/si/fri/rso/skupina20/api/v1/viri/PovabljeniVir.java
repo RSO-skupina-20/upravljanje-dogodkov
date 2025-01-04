@@ -42,6 +42,11 @@ public class PovabljeniVir {
     @Inject
     private DogodekZrno dogodekZrno;
 
+    @Inject
+    private EmailSender emailSender;
+
+    private static String okolje = System.getenv("ENVIRONMENT");
+
     @GET
     @Operation(summary = "Pridobi seznam vseh povabljenih", description = "Vrne seznam vseh povabljenih")
     @APIResponses({
@@ -182,6 +187,9 @@ public class PovabljeniVir {
             String nameTo = povabljeni.getIme() + " " + povabljeni.getPriimek();
 
             EmailSender.sendEmail(nameTo, to, subject, body);
+            if(okolje.equals("dev")){
+                emailSender.sendEmailKafka(nameTo, to, subject, body);
+            }
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("{\"napaka\": \"Povabilo ni bilo uspešno ustvarjeno\"}").build();
         }

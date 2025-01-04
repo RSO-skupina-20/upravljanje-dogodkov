@@ -84,6 +84,11 @@
             <artifactId>kumuluzee-metrics-core</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee.streaming</groupId>
+            <artifactId>kumuluzee-streaming-kafka</artifactId>
+            <version>${kumuluzee-streaming.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

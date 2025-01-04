@@ -28,13 +28,13 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 3600
             failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /health/ready
-              port: 8080
-            initialDelaySeconds: 60
-            periodSeconds: 3600
-            failureThreshold: 3
+          #readinessProbe:
+          #  httpGet:
+          #    path: /health/ready
+          #     port: 8080
+          #  initialDelaySeconds: 90
+          #  periodSeconds: 3600
+          #  failureThreshold: 3
           env:
             - name: DB_URL
               valueFrom:
@@ -56,6 +56,21 @@ spec:
                 secretKeyRef:
                   name: my-app-secrets
                   key: JWT_SECRET
+            - name: ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: ENVIRONMENT
+            - name: FROM_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: FROM_DOMAIN
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: TOKEN
 ---
 
 apiVersion: v1
