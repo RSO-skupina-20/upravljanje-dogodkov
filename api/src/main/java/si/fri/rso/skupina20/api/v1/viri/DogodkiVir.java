@@ -2,6 +2,7 @@ package si.fri.rso.skupina20.api.v1.viri;
 
 import com.kumuluz.ee.cors.annotations.CrossOrigin;
 import com.kumuluz.ee.rest.beans.QueryParameters;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -117,6 +118,7 @@ public class DogodkiVir {
                     "{\"napaka\": \"Napaka na strežniku\"}")))
     })
     @SecurityRequirement(name = "bearerAuth")
+    @Timed(name = "ustvariDogodekTimer")
     public Response ustvariDogodek(@RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
             schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek, @HeaderParam("Authorization") String authorization) {
 
