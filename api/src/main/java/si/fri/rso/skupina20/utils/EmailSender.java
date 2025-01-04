@@ -13,10 +13,11 @@ import java.util.Properties;
 
 public class EmailSender {
 
+    private static String fromDomain = System.getenv("FROM_DOMAIN");
+    private static String token = System.getenv("TOKEN");
+
     public static void sendEmail(String nameTo, String emailAddress, String subject, String text) {
-        Dotenv dotenv = Dotenv.load();
         Email email = new Email();
-        final String fromDomain = dotenv.get("FROM_DOMAIN");
 
         email.setFrom("Organizacija dogodkov", fromDomain);
         email.addRecipient(nameTo, emailAddress);
@@ -25,7 +26,7 @@ public class EmailSender {
         email.setPlain(text);
 
         MailerSend ms = new MailerSend();
-        ms.setToken(dotenv.get("TOKEN"));
+        ms.setToken(token);
 
         try {
             MailerSendResponse response = ms.emails().send(email);
