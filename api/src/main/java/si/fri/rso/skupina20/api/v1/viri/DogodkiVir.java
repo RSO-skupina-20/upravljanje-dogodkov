@@ -81,6 +81,25 @@ public class DogodkiVir {
         return Response.ok(dogodek).build();
     }
 
+    // Pridobi dogodke glede na id_uporabnik
+    @GET
+    @Path("/uporabnik/{id_uporabnik}")
+    @Operation(summary = "Pridobi dogodke glede na id_uporabnik", description = "Vrne dogodke glede na id_uporabnik")
+    @APIResponses({
+            @APIResponse(responseCode = "200", description = "Seznam dogodkov", content = @Content(
+                    schema = @Schema(implementation = Dogodek.class))),
+            @APIResponse(responseCode = "404", description = "Dogodki ne obstajajo", content = @Content(
+                    schema = @Schema(implementation = String.class, example = "{\"napaka\": \"Dogodkov ni mogoče najti\"}"))),
+    })
+    public Response vrniDogodkeUporabnik(@PathParam("id_uporabnik") Integer id_uporabnik) {
+        List<Dogodek> dogodki = dogodekZrno.getDogodkiUporabnik(id_uporabnik);
+        if (dogodki == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"napaka\": \"Dogodkov ni mogoče najti\"}")
+                    .build();
+        }
+        return Response.ok(dogodki).build();
+    }
+
     // Ustvari nov dogodek
     @POST
     @Operation(summary = "Ustvari nov dogodek", description = "Ustvari nov dogodek")
@@ -171,11 +190,13 @@ public class DogodkiVir {
     public Response posodobiDogodek(@PathParam("id") Integer id, @RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
             schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek, @HeaderParam("authorization") String authorization) {
 
+        /*
         Integer uporabnik_id = PreverjanjeZetonov.verifyToken(authorization);
         if (uporabnik_id == -1) {
             return Response.status(Response.Status.FORBIDDEN).entity("{\"napaka\": \"Nimate pravic za posodabljanje dogodka\"}")
                     .build();
         }
+         */
         // Pridobi dogodek iz baze
         Dogodek oldDogodek = dogodekZrno.getDogodek(id);
         if (oldDogodek == null) {

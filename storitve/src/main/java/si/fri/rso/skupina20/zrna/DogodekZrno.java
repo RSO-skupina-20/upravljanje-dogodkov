@@ -120,6 +120,7 @@ public class DogodekZrno {
             return null;
         }
 
+
         try {
             em.persist(dogodek);
             return dogodek;
@@ -166,6 +167,11 @@ public class DogodekZrno {
         return em.createNamedQuery("Dogodek.getAllByProstor", Dogodek.class)
                 .setParameter("id_prostor", idProstor)
                 .getResultList();
+    }
 
+    public List<Dogodek> getDogodkiUporabnik(Integer idUporabnik) {
+        return em.createNamedQuery("Dogodek.getAllByUporabnik", Dogodek.class)
+                .setParameter("id_uporabnik", idUporabnik)
+                .getResultList();
     }
 }
