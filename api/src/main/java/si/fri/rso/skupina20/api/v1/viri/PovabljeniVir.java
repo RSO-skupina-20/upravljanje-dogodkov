@@ -186,9 +186,12 @@ public class PovabljeniVir {
 
             String nameTo = povabljeni.getIme() + " " + povabljeni.getPriimek();
 
-            EmailSender.sendEmail(nameTo, to, subject, body);
+            // V dev okolju pošiljamo email preko kafke (druga mikrostoritev)
+            // drugače pa direktno
             if(okolje.equals("dev")){
                 emailSender.sendEmailKafka(nameTo, to, subject, body);
+            }else{
+                EmailSender.sendEmail(nameTo, to, subject, body);
             }
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("{\"napaka\": \"Povabilo ni bilo uspešno ustvarjeno\"}").build();

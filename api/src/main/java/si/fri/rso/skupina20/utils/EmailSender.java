@@ -49,11 +49,17 @@ public class EmailSender {
     private Producer<String, String> producer;
 
     public void sendEmailKafka(String nameTo, String emailAddress, String subject, String text) {
+        // Escape special characters (e.g., newline characters)
+        String escapedText = text.replace("\n", "\\n").replace("\r", "\\r");
+
+        // Format the email message
         String emailMessage = String.format("{\"name\": \"%s\", \"email\": \"%s\", \"subject\": \"%s\", \"body\": \"%s\"}",
-                nameTo, emailAddress, subject, text);
+                nameTo, emailAddress, subject, escapedText);
+
         producer.send(new ProducerRecord<>("test-topic", emailMessage));
         System.out.println("Email sent to kafka");
     }
+
 
 
 
