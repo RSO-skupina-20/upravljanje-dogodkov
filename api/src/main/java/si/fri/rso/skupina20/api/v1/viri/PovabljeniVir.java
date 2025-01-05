@@ -165,7 +165,13 @@ public class PovabljeniVir {
     })
     // Ustvari novo povabilo
     @SecurityRequirement(name = "bearerAuth")
-    public Response ustvariPovabilo(Povabljeni povabljeni, @HeaderParam("authorization") String authorization) {
+
+
+    public Response ustvariPovabilo(
+            @RequestBody(description = "Entiteta povabljeni", required = true, content = @Content(
+                    schema = @Schema(implementation = Povabljeni.class, example = "{\"email\": \"janez.novak@gmail.com\", \"id_dogodek\": 1, \"ime\": \"Janez\", \"priimek\": \"Novak\", \"sprejeto\": true}")
+            )) Povabljeni povabljeni,
+            @HeaderParam("Authorization") String authorization) {
         Dogodek dogodek = dogodekZrno.getDogodek(povabljeni.getId_dogodek());
         if (dogodek == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"napaka\": \"Dogodek ne obstaja\"}").build();
@@ -216,7 +222,7 @@ public class PovabljeniVir {
     // Posodobi povabilo
     @SecurityRequirement(name = "bearerAuth")
     public Response posodobiPovabilo(@PathParam("id") Integer id, @RequestBody(description = "Entiteta povabljeni", required = true, content = @Content(
-            schema = @Schema(implementation = Povabljeni.class))) Povabljeni povabljeni, @HeaderParam("authorization") String authorization) {
+            schema = @Schema(implementation = Povabljeni.class, example = "{\"email\": \"janez.novak@gmail.com\", \"id_dogodek\": 1, \"ime\": \"Janez\", \"priimek\": \"Novak\", \"sprejeto\": true}"))) Povabljeni povabljeni, @HeaderParam("authorization") String authorization) {
 
         Integer uporabnik_id = PreverjanjeZetonov.verifyToken(authorization);
         if (uporabnik_id == -1) {

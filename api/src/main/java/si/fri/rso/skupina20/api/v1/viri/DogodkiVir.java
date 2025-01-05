@@ -120,7 +120,7 @@ public class DogodkiVir {
     @SecurityRequirement(name = "bearerAuth")
     @Timed(name = "ustvariDogodekTimer")
     public Response ustvariDogodek(@RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
-            schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek, @HeaderParam("Authorization") String authorization) {
+            schema = @Schema(implementation = Dogodek.class, example = "{\"naziv\": \"Koncert\", \"zacetek\": \"2020-12-12 20:00:00\", \"konec\": \"2020-12-12 23:00:00\", \"opis\": \"Koncert skupine Siddharta\", \"cena\": 20, \"id_prostor\": 1, \"id_uporabnik\": 1}"))) Dogodek dogodek, @HeaderParam("Authorization") String authorization) {
 
         // Preveri, če so vhodni podatki veljavni
         if (dogodek.getNaziv() == null || dogodek.getZacetek() == null || dogodek.getKonec() == null ||
@@ -190,7 +190,7 @@ public class DogodkiVir {
     })
     @SecurityRequirement(name = "bearerAuth")
     public Response posodobiDogodek(@PathParam("id") Integer id, @RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
-            schema = @Schema(implementation = Dogodek.class))) Dogodek dogodek, @HeaderParam("authorization") String authorization) {
+            schema = @Schema(implementation = Dogodek.class, example = "{\"naziv\": \"Koncert\", \"zacetek\": \"2020-12-12 20:00:00\", \"konec\": \"2020-12-12 23:00:00\", \"opis\": \"Koncert skupine Siddharta\", \"cena\": 20, \"id_prostor\": 1, \"id_uporabnik\": 1}"))) Dogodek dogodek, @HeaderParam("authorization") String authorization) {
 
         /*
         Integer uporabnik_id = PreverjanjeZetonov.verifyToken(authorization);
