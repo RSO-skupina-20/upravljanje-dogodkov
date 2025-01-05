@@ -9,7 +9,9 @@ import java.util.List;
         @NamedQuery(name = "Dogodek.getAll", query = "SELECT d FROM dogodek d"),
         @NamedQuery(name = "Dogodek.getDogodek", query = "SELECT d FROM dogodek d WHERE d.id_dogodek = :id"),
         @NamedQuery(name = "Dogodek.updateDogodek", query = "UPDATE dogodek d SET d.naziv = :naziv, d.zacetek = :zacetek, d.konec = :konec, d.opis = :opis, d.cena = :cena, d.id_prostor = :id_prostor, d.id_uporabnik = :id_uporabnik WHERE d.id_dogodek = :id"),
-        @NamedQuery(name = "Dogodek.deleteDogodek", query = "DELETE FROM dogodek d WHERE d.id_dogodek = :id")
+        @NamedQuery(name = "Dogodek.deleteDogodek", query = "DELETE FROM dogodek d WHERE d.id_dogodek = :id"),
+        @NamedQuery(name = "Dogodek.getAllByProstor", query = "SELECT d FROM dogodek d WHERE d.id_prostor = :id_prostor"),
+        @NamedQuery(name = "Dogodek.getAllByUporabnik", query = "SELECT d FROM dogodek d WHERE d.id_uporabnik = :id_uporabnik")
 })
 public class Dogodek {
     @Id

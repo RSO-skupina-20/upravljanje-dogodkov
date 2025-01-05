@@ -98,10 +98,12 @@ public class PovabljeniZrno {
      */
     @Transactional
     public Povabljeni createPovabljeni(Povabljeni povabljeni, String token) {
+        /*
         Integer uporabnik_id = PreverjanjeZetonov.verifyToken(token);
         if (uporabnik_id == -1) {
             return null;
         }
+         */
         try {
             // Preveri, če povabljeni vsebuje vse potrebne podatke
             if (povabljeni == null || povabljeni.getIme() == null || povabljeni.getPriimek() == null ||

@@ -85,35 +85,51 @@ public class DogodekZrno {
      */
     @Transactional
     public Dogodek createDogodek(Dogodek dogodek, String token) {
-        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(token);
-        if (uporabnik_id == -1) {
+        Integer uporabnikId;
+
+        /*
+        // Preverjanje avtorizacijskega žetona
+        try {
+            uporabnikId = PreverjanjeZetonov.verifyToken(token);
+            if (uporabnikId == -1) {
+                log.severe("Neveljaven avtorizacijski žeton");
+                return null;
+            }
+        } catch (Exception e) {
+            log.severe("Napaka pri preverjanju žetona: " + e.getMessage());
+            return null;
+        }
+         */
+
+        // Preveri, če uporabnik obstaja
+        boolean uporabnikObstaja = em.createNamedQuery("Uporabnik.getUporabnik", Uporabnik.class)
+                .setParameter("id", dogodek.getId_uporabnik())
+                .getResultList()
+                .stream()
+                .findFirst()
+                .isPresent();
+
+        if (!uporabnikObstaja) {
+            log.severe("Uporabnik z ID " + dogodek.getId_uporabnik() + " ne obstaja");
             return null;
         }
 
-        // Preveri, če dogodek vsebuje vse potrebne podatke
-        if (dogodek == null || dogodek.getNaziv() == null || dogodek.getZacetek() == null ||
-                dogodek.getKonec() == null || dogodek.getOpis() == null || dogodek.getCena() == null ||
-                dogodek.getId_prostor() == null || dogodek.getId_uporabnik() == null) {
-            log.severe("Dogodek ni pravilno definiran");
-            return null;
-        }
-        // Preveri, uporabnik s tem id-jem obstaja
-        if (em.createNamedQuery("Uporabnik.getUporabnik", Uporabnik.class).setParameter("id", dogodek.getId_uporabnik()).getResultList().isEmpty()) {
-            log.severe("Uporabnik z id-jem " + dogodek.getId_uporabnik() + " ne obstaja");
+        // Preveri pravilnost dogodka
+        if (dogodek.getZacetek().after(dogodek.getKonec())) {
+            log.severe("Začetek dogodka je po koncu dogodka");
             return null;
         }
 
-        TODO:
-        //Preveri, če prostor s tem id-jem obstaja in pa če je prostor na voljo v času dogodka
 
         try {
             em.persist(dogodek);
             return dogodek;
         } catch (Exception e) {
             log.severe("Napaka pri dodajanju dogodka: " + e.getMessage());
-            return null;
+            throw e; // Propagate exception for better error handling
         }
     }
+
 
     /***
      * Posodobi dogodek v bazi
@@ -145,5 +161,17 @@ public class DogodekZrno {
 
     public Long getDogodkiCount(QueryParameters query) {
         return JPAUtils.queryEntitiesCount(em, Dogodek.class, query);
+    }
+
+    public List<Dogodek> getDogodkiProstor(Integer idProstor) {
+        return em.createNamedQuery("Dogodek.getAllByProstor", Dogodek.class)
+                .setParameter("id_prostor", idProstor)
+                .getResultList();
+    }
+
+    public List<Dogodek> getDogodkiUporabnik(Integer idUporabnik) {
+        return em.createNamedQuery("Dogodek.getAllByUporabnik", Dogodek.class)
+                .setParameter("id_uporabnik", idUporabnik)
+                .getResultList();
     }
 }

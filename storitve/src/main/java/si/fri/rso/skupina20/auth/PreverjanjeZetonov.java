@@ -17,9 +17,6 @@ public class PreverjanjeZetonov {
             DecodedJWT jwt = JWT.decode(token);
             String tipUporabnika = jwt.getClaim("tipUporabnika").asString();
 
-            if(!tipUporabnika.equals("LASTNIK")){
-                return -1;
-            }
             return jwt.getClaim("id").asInt();
         } catch (Exception e){
             return -1;

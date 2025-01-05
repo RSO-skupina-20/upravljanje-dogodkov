@@ -23,5 +23,20 @@ kumuluzee:
         jndi-name: jdbc/upravljanje-dogodkov
       disk-space-health-check:
         threshold: 1000000000
+  metrics:
+    add-default-tags: false
+    servlet:
+      enabled: true
+      mapping: /metrics
 
-
+  streaming:
+    kafka:
+      producer:
+        bootstrap-servers: host.docker.internal:9092
+        acks: all
+        retries: 0
+        batch-size: 16384
+        linger-ms: 1
+        buffer-memory: 33554432
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer
