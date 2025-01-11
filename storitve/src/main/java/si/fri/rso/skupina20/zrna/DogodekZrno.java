@@ -85,13 +85,11 @@ public class DogodekZrno {
      */
     @Transactional
     public Dogodek createDogodek(Dogodek dogodek, String token) {
-        Integer uporabnikId;
-
-        /*
         // Preverjanje avtorizacijskega žetona
+        List<String> roles = List.of("UPORABNIK");
         try {
-            uporabnikId = PreverjanjeZetonov.verifyToken(token);
-            if (uporabnikId == -1) {
+            boolean uporabnik = PreverjanjeZetonov.verifyToken(token, roles);
+            if (!uporabnik) {
                 log.severe("Neveljaven avtorizacijski žeton");
                 return null;
             }
@@ -99,7 +97,6 @@ public class DogodekZrno {
             log.severe("Napaka pri preverjanju žetona: " + e.getMessage());
             return null;
         }
-         */
 
         // Preveri, če uporabnik obstaja
         boolean uporabnikObstaja = em.createNamedQuery("Uporabnik.getUporabnik", Uporabnik.class)
@@ -119,7 +116,6 @@ public class DogodekZrno {
             log.severe("Začetek dogodka je po koncu dogodka");
             return null;
         }
-
 
         try {
             em.persist(dogodek);
