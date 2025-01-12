@@ -163,7 +163,7 @@ public class DogodkiVir {
     })
     @SecurityRequirement(name = "bearerAuth")
     public Response izbrisiDogodek(@PathParam("id") Integer id, @HeaderParam("authorization") String authorization) {
-        if (!PreverjanjeZetonov.verifyOwner(authorization, id)) {
+        if (PreverjanjeZetonov.getUserId(authorization) != dogodekZrno.getDogodek(id).getId_uporabnik()) {
             return Response.status(Response.Status.FORBIDDEN).entity("{\"napaka\": \"Nimate pravic za brisanje dogodka\"}")
                     .build();
         }
@@ -192,13 +192,11 @@ public class DogodkiVir {
     public Response posodobiDogodek(@PathParam("id") Integer id, @RequestBody(description = "Entiteta dogodek", required = true, content = @Content(
             schema = @Schema(implementation = Dogodek.class, example = "{\"naziv\": \"Koncert\", \"zacetek\": \"2020-12-12 20:00:00\", \"konec\": \"2020-12-12 23:00:00\", \"opis\": \"Koncert skupine Siddharta\", \"cena\": 20, \"id_prostor\": 1, \"id_uporabnik\": 1}"))) Dogodek dogodek, @HeaderParam("authorization") String authorization) {
 
-        /*
-        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(authorization);
-        if (uporabnik_id == -1) {
+        Boolean uporabnik = PreverjanjeZetonov.verifyToken(authorization, List.of("UPORABNIK"));
+        if (!uporabnik) {
             return Response.status(Response.Status.FORBIDDEN).entity("{\"napaka\": \"Nimate pravic za posodabljanje dogodka\"}")
                     .build();
         }
-         */
         // Pridobi dogodek iz baze
         Dogodek oldDogodek = dogodekZrno.getDogodek(id);
         if (oldDogodek == null) {

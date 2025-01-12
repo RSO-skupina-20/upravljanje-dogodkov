@@ -165,8 +165,6 @@ public class PovabljeniVir {
     })
     // Ustvari novo povabilo
     @SecurityRequirement(name = "bearerAuth")
-
-
     public Response ustvariPovabilo(
             @RequestBody(description = "Entiteta povabljeni", required = true, content = @Content(
                     schema = @Schema(implementation = Povabljeni.class, example = "{\"email\": \"janez.novak@gmail.com\", \"id_dogodek\": 1, \"ime\": \"Janez\", \"priimek\": \"Novak\", \"sprejeto\": true}")
@@ -223,9 +221,9 @@ public class PovabljeniVir {
     @SecurityRequirement(name = "bearerAuth")
     public Response posodobiPovabilo(@PathParam("id") Integer id, @RequestBody(description = "Entiteta povabljeni", required = true, content = @Content(
             schema = @Schema(implementation = Povabljeni.class, example = "{\"email\": \"janez.novak@gmail.com\", \"id_dogodek\": 1, \"ime\": \"Janez\", \"priimek\": \"Novak\", \"sprejeto\": true}"))) Povabljeni povabljeni, @HeaderParam("authorization") String authorization) {
-
-        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(authorization);
-        if (uporabnik_id == -1) {
+        List<String> roles = List.of("UPORABNIK");
+        Boolean uporabnik_id = PreverjanjeZetonov.verifyToken(authorization, roles);
+        if (uporabnik_id) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("{\"napaka\": \"Nimate pravic za posodabljanje povabila\"}").build();
         }
         // Pridobi povabilo iz baze
@@ -262,7 +260,8 @@ public class PovabljeniVir {
     // Izbriši povabilo
     @SecurityRequirement(name = "bearerAuth")
     public Response izbrisiPovabilo(@PathParam("id") Integer id, @HeaderParam("authorization") String authorization) {
-        if (!PreverjanjeZetonov.verifyOwner(authorization, id)) {
+        int idUporabnik = dogodekZrno.getDogodek(povabljeniZrno.getVabilo(id).getId_dogodek()).getId_uporabnik();
+        if (PreverjanjeZetonov.getUserId(authorization) != idUporabnik) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("{\"napaka\": \"Nimate pravic za brisanje povabila\"}").build();
         }
         if (povabljeniZrno.deletePovabljeni(id)) {

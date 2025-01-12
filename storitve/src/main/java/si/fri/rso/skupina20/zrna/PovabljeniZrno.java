@@ -98,12 +98,11 @@ public class PovabljeniZrno {
      */
     @Transactional
     public Povabljeni createPovabljeni(Povabljeni povabljeni, String token) {
-        /*
-        Integer uporabnik_id = PreverjanjeZetonov.verifyToken(token);
-        if (uporabnik_id == -1) {
+        int uporabnik_id = PreverjanjeZetonov.getUserId(token);
+        int ustvaril = dogodekZrno.getDogodek(povabljeni.getId_dogodek()).getId_uporabnik();
+        if (uporabnik_id != ustvaril) {
             return null;
         }
-         */
         try {
             // Preveri, če povabljeni vsebuje vse potrebne podatke
             if (povabljeni == null || povabljeni.getIme() == null || povabljeni.getPriimek() == null ||
