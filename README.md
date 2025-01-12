@@ -1,15 +1,12 @@
 # upravljanje-dogodkov
 Mikrostoritev bo omogočala ustvarjanje, urejanje, brisanje ter pregled ustvarjenih dogodkov. Uporabnikom bo omogočala, 
-da ustvarijo dogodek, pri čemer definirajo podrobnosti in izvedejo tudi rezervacijo ter plačilo prostora. Omogočeno bo 
+da ustvarijo dogodek, pri čemer definirajo podrobnosti in izvedejo rezervacijo. Omogočeno bo 
 tudi dodajanje gostov, ki bodo prejeli obvestilo na elektronsko pošto.
 
 Funkcionalnosti aplikacije:
-- Ustvarjanje dogodka: Uporabniki lahko ustvarijo nov dogodek. Po uspešni rezervaciji bodo prejeli obvestilo na elektronsko pošto
-- Izbris dogodka: Uporabniki lahko izbrišejo dogodek, ki ga ne želijo več izvesti
+- Ustvarjanje dogodka: Uporabniki lahko ustvarijo nov dogodek
 - Urejanje dogodka: Uporabniki lahko urejajo podrobnosti dogodka
 - Dodajanje gosta: Uporabniki lahko dodajo gosta na dogodek, ki bo prejel obvestilo na elektronsko pošto
-- Izvedba plačila: Uporabniki lahko izvedejo plačilo za rezervacijo prostora
-
 
 # 1. Dodajanje .env datoteke
 - Dodati je potrebno DB_URL, DB_USER, DB_PASSWORD, JWT_SECRET, FROM_DOMAIN, TOKEN in ENVIROMENT
